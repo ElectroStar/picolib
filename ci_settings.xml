@@ -1,0 +1,35 @@
+ <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+   <servers>
+    <server>
+      <id>ossrh</id>
+      <username>${env.SONATYPE_USERNAME}</username>
+      <password>${env.SONATYPE_PASSWORD}</password>
+    </server>
+  </servers>
+   <profiles>
+     <profile>
+       <id>gpg</id>
+       <properties>
+         <gpg.executable>${env.GPG_EXECUTABLE}</gpg.executable>
+         <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+       </properties>
+     </profile>
+     <profile>
+       <id>sonar</id>
+       <properties>
+         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+         <sonar.organization>electrostar</sonar.organization>
+         <sonar.login>${env.SONAR_TOKEN}</sonar.login>
+         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+         <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
+         <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
+         <sonar.exclusions>**/library/*.java</sonar.exclusions>
+       </properties>
+     </profile>
+   </profiles>
+   <activeProfiles>
+     <activeProfile>gpg</activeProfile>
+     <activeProfile>sonar</activeProfile>
+   </activeProfiles>
+ </settings>
