@@ -188,18 +188,16 @@ checkVersion() {
   export PROJECT_VERSION=$(mvn help:evaluate -N -Dexpression=project.version|grep -v '\[')
   echo "Found Version ${PROJECT_VERSION} in pom.xml"
 
+  export IS_RC=""
+  export IS_RELEASE=""
   if [ ${TRAVIS_TAG} ]; then
     # Check if it is a Release
     if matchRegex ${TRAVIS_TAG} ${RELEASE_VERSION_REGEX}; then
       export IS_RELEASE="1"
-    else 
-      export IS_RELEASE=""
     fi
     # Check for Release Candidate
     if matchRegex ${TRAVIS_TAG} ${RC_VERSION_REGEX}; then 
       export IS_RC="1"
-    else 
-      export IS_RC=""
     fi
   fi
   # Check for Snapshot
