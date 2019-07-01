@@ -10,6 +10,7 @@ SNAPSHOT_VERSION_REGEX="^[0-9]+\.[0-9]+\.[0-9]+-SNAPSHOT$"
 TOOL_DIR="${HOME}/tools"
 TOOL_BIN_DIR="${TOOL_DIR}/bin"
 LIB_NAME="picolib"
+REPO_SLUG="ElectroStar/${LIB_NAME}"
 
 # Github Release Tool
 GHR_ARCH="linux_amd64"
@@ -166,8 +167,35 @@ runTests() {
 # Check Code Quality
 #
 checkCodeQuality() {
-  echo "Checking Code Quality with Sonar"
-  mvn $MAVEN_CLI_OPTS sonar:sonar -s ci_settings.xml
+  # Only process when it is no pull request and if it is a pull request only accept pull requests for the same repo
+  if [ ${TRAVIS_PULL_REQUEST} = "false" ] || [ ${TRAVIS_PULL_REQUEST_SLUG} = ${REPO_SLUG} ]; then
+    # Additional Options
+    sonar_options=""
+
+    # For Pull Request
+    if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then
+      echo "Checking Code Quality with Sonar for Pull Request"  
+      sonar_options="-Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} -Dsonar.pullrequest.branch=${TRAVIS_PULL_REQUEST_BRANCH} -Dsonar.pullrequest.base=${TRAVIS_BRANCH} ${sonar_options}"
+    else
+      if [ ${TRAVIS_BRANCH} != "master" ]; then
+        # Determinate the target branch
+        target_branch="develop"
+        if [ ${TRAVIS_BRANCH} = "develop" ]; then
+          target_branch="master"
+        elif matchRegex ${TRAVIS_BRANCH} "^hotfix.*"; then
+          target_branch="master"
+        elif matchRegex ${TRAVIS_BRANCH} "^release.*"; then
+          target_branch="master"
+        fi
+        sonar_options="-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.branch.target=${target_branch} ${sonar_options}"
+        echo "Checking Code Quality with Sonar for branch ${TRAVIS_BRANCH} targetting branch ${target_branch}"
+      else
+        echo "Checking Code Quality with Sonar for branch ${TRAVIS_BRANCH}"
+      fi
+    fi
+
+    mvn $MAVEN_CLI_OPTS sonar:sonar -s ci_settings.xml ${sonar_options}
+  fi
 }
 
 #
@@ -194,10 +222,12 @@ checkVersion() {
     # Check if it is a Release
     if matchRegex ${TRAVIS_TAG} ${RELEASE_VERSION_REGEX}; then
       export IS_RELEASE="1"
+      export TRAVIS_BRANCH="master"
     fi
     # Check for Release Candidate
     if matchRegex ${TRAVIS_TAG} ${RC_VERSION_REGEX}; then 
       export IS_RC="1"
+      export TRAVIS_BRANCH="release-$(echo ${TRAVIS_TAG} | sed -e 's/-RC[0-9]*//g')"
     fi
   fi
   # Check for Snapshot
@@ -220,6 +250,11 @@ checkVersion() {
   echo "=================================================================================================="
   echo "Information about this Build:"
   echo "Version: ${PROJECT_VERSION}"
+  if [ ${TRAVIS_TAG} ]; then
+    echo "Tag: ${TRAVIS_TAG}"
+  else
+    echo "Branch: ${TRAVIS_BRANCH}"
+  fi
   if [ ! ${IS_RELEASE} ] && [ ! ${IS_RC} ] && [ ! ${IS_SNAPSHOT} ]; then
     echo "Build Type is default."
     echo "Only Continuous Integration Tools will be executed!"
@@ -232,6 +267,11 @@ checkVersion() {
       echo "Build Type is a Snapshot."
     fi
   fi
+  if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then
+    echo "Pull Request for RP #${TRAVIS_PULL_REQUEST}:"
+    echo " from branch ${TRAVIS_PULL_REQUEST_BRANCH} of repo ${TRAVIS_PULL_REQUEST_SLUG} to ${TRAVIS_BRANCH}" 
+  fi
+  echo "Repository: ${TRAVIS_REPO_SLUG}"
   echo "=================================================================================================="
   echo ""
   echo ""
@@ -404,24 +444,31 @@ updateGHPages() {
 # Deploy
 #
 deploy() {
-  if [ ${IS_RELEASE} ] || [ ${IS_RC} ] || [ ${IS_SNAPSHOT} ]; then
-    # Import GPG for Signing
-    importGPG  
-    # Deploy to Central
-    mavenDeploy
+  # No Deploy for Pull Requests
+  if [ ${TRAVIS_PULL_REQUEST} = "false" ]; then
+    # Only Deploy for this repo
+    if [ ${TRAVIS_REPO_SLUG} = ${REPO_SLUG} ]; then
+      # Only Deploy when Release, Release Candidate or Snapshot
+      if [ ${IS_RELEASE} ] || [ ${IS_RC} ] || [ ${IS_SNAPSHOT} ]; then
+        # Import GPG for Signing
+        importGPG  
+        # Deploy to Central
+        mavenDeploy
 
-    # Continue only for Releases and Release Candidates
-    if [ ${IS_RELEASE} ] || [ ${IS_RC} ]; then
-      # Install Deploy Tools for Changelog and Github Releases
-      installTools
-      # Create Changelog
-      createChangelog
-      # Create Github Release
-      createGitHubRelease    
+        # Continue only for Releases and Release Candidates
+        if [ ${IS_RELEASE} ] || [ ${IS_RC} ]; then
+          # Install Deploy Tools for Changelog and Github Releases
+          installTools
+          # Create Changelog
+          createChangelog
+          # Create Github Release
+          createGitHubRelease    
 
-      # Update of the GH-Pages only for Releases
-      if [ ${IS_RELEASE} ]; then
-        updateGHPages       
+          # Update of the GH-Pages only for Releases
+          if [ ${IS_RELEASE} ]; then
+            updateGHPages       
+          fi
+        fi
       fi
     fi
   fi
