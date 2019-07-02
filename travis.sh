@@ -32,6 +32,8 @@ MAVEN_CLI_OPTS="--batch-mode --errors --fail-fast --show-version $MAVEN_PREVENT_
 
 if [[ -z ${TRAVIS_BRANCH+x} ]]; then TRAVIS_BRANCH=""; fi
 if [[ -z ${TRAVIS_TAG+x} ]]; then TRAVIS_TAG=""; fi
+if [[ -z ${TRAVIS_COMMIT_MESSAGE+x} ]]; then TRAVIS_COMMIT_MESSAGE=""; fi
+COMMIT_SUBJECT=$(echo ${TRAVIS_COMMIT_MESSAGE} | head -n1)
 
 #
 # Help Function to check if it matches a regex
@@ -473,6 +475,14 @@ deploy() {
     fi
   fi
 }
+
+# Check if this commit should be skipped
+if [ ${COMMIT_SUBJECT} ]; then
+  if matchRegex ${COMMIT_SUBJECT} ".*\[skip ci\].*" then 
+    echo "Commit Subject contains [skip ci] and the ci job will be skipped!"
+    exit 0
+  fi
+fi
 
 checkVersion
 testBuild
