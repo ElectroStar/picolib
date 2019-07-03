@@ -53,7 +53,7 @@ public class UnitFactoryTest {
   public void setUp() {
     factory = new UnitFactory(mockFactoryHelper);
     when(mockFactoryHelper.makePS2000()).thenReturn(mockUnitPS2000);
-    when(mockUnitPS2000.getUnitSeries()).thenReturn(UnitSeries.PicoScope2000er);
+    when(mockUnitPS2000.getUnitSeries()).thenReturn(UnitSeries.PICOSCOPE2000);
   }
   
   /**
@@ -63,9 +63,9 @@ public class UnitFactoryTest {
   @Test
   public void testGetUnit() throws Exception {
     for(UnitSeries us : UnitSeries.values()) {
-      if(us == UnitSeries.PicoScope2000er) {
+      if(us == UnitSeries.PICOSCOPE2000) {
         PicoUnit unit = factory.getUnit(us);
-        assertEquals(unit.getUnitSeries(), UnitSeries.PicoScope2000er);
+        assertEquals(UnitSeries.PICOSCOPE2000, unit.getUnitSeries());
       } else {
         assertThrows(NotSupportedException.class, () -> {
           factory.getUnit(us);
@@ -73,7 +73,7 @@ public class UnitFactoryTest {
       }
     }
     
-    assertThrows(NullPointerException.class, () -> {
+    assertThrows(NotSupportedException.class, () -> {
       factory.getUnit(null);
     });
   }
@@ -83,6 +83,8 @@ public class UnitFactoryTest {
    */
   @Test
   public void testConstructor() {
-    UnitFactory uf = new UnitFactory();
+    assertDoesNotThrow(() -> {
+      UnitFactory uf = new UnitFactory();
+    });
   }
 }

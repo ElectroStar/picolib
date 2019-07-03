@@ -20,7 +20,6 @@
 
 package com.github.electrostar.picolib;
 
-import com.github.electrostar.picolib.CollectionTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -153,8 +152,8 @@ public class CollectionTimeTest {
       assertEquals(String.valueOf(showValue) + " " + unit + "/Div", ct[i].getLabel());
     }
     
-    assertNotEquals(CollectionTime.DIV100MS.toString(), "100 us/Div");
-    assertNotEquals(CollectionTime.DIV100MS.getLabel(), "100 us/Div");
+    assertNotEquals("100 us/Div", CollectionTime.DIV100MS.toString());
+    assertNotEquals("100 us/Div", CollectionTime.DIV100MS.getLabel());
   }
   
   /**

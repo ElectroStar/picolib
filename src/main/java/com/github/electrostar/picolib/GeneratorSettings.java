@@ -48,7 +48,7 @@ public class GeneratorSettings {
    * </p>
    */
   public GeneratorSettings() {
-    this(WaveType.SINE, 0, 0, 0, SweepType.UP, 0, 0, 0, 0);
+    this(WaveType.SINE, 0, 0, 0);
   }
 
   /**
@@ -60,12 +60,12 @@ public class GeneratorSettings {
     this(s.waveType, 
             s.startFrequency, 
             s.amplitude, 
-            s.offset, 
-            s.sweepType, 
-            s.sweeps, 
-            s.stopFrequency, 
-            s.increment, 
-            s.dwellTime);
+            s.offset);
+    this.sweepType = s.sweepType;
+    this.sweeps = s.sweeps;
+    this.stopFrequency = s.stopFrequency;
+    this.increment = s.increment;
+    this.dwellTime = s.dwellTime;
   }
 
   /**
@@ -76,7 +76,7 @@ public class GeneratorSettings {
    * @param amplitude the amplitude of the signal in volt.
    */
   public GeneratorSettings(WaveType waveType, double startFrequency, double amplitude) {
-    this(waveType, startFrequency, amplitude, 0, SweepType.UP, 0, startFrequency, 0, 0);
+    this(waveType, startFrequency, amplitude, 0);
   }
 
   /**
@@ -91,41 +91,15 @@ public class GeneratorSettings {
           double startFrequency, 
           double amplitude, 
           double offset) {
-    this(waveType, startFrequency, amplitude, offset, SweepType.UP, 0, startFrequency, 0, 0);
-  }
-
-  /**
-   * Create Generator Settings.
-   * 
-   * @param waveType       the type of wave of the outcomming signal.
-   * @param startFrequency the starting frequency of the wave in Hertz.
-   * @param amplitude      the amplitude of the signal in volt.
-   * @param offset         the offset of the wave signal.
-   * @param sweepType      the type of the sweep of the outcoming signal.
-   * @param sweeps         the number of sweeps in Hertz.
-   * @param stopFrequency  the stopping frequency of the wave in Hertz.
-   * @param increment      the amount by which the frequency rises or falls every {@code dwellTime}
-   *                       seconds in sweep mode
-   * @param dwellTime      the dwell time of an increment step in Seconds.
-   */
-  public GeneratorSettings(WaveType waveType, 
-          double startFrequency, 
-          double amplitude, 
-          double offset, 
-          SweepType sweepType, 
-          int sweeps, 
-          double stopFrequency, 
-          double increment, 
-          double dwellTime) {
     this.waveType = waveType;
     this.startFrequency = startFrequency;
     this.amplitude = amplitude;
     this.offset = offset;
-    this.sweepType = sweepType;
-    this.sweeps = sweeps;
-    this.stopFrequency = stopFrequency;
-    this.increment = increment;
-    this.dwellTime = dwellTime;
+    this.sweepType = SweepType.UP;
+    this.sweeps = 0;
+    this.stopFrequency = startFrequency;
+    this.increment = 0;
+    this.dwellTime = 0;
   }
 
   /**

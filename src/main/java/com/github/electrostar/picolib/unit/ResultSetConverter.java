@@ -22,9 +22,11 @@ package com.github.electrostar.picolib.unit;
 
 import com.github.electrostar.picolib.ChannelSettings;
 import com.github.electrostar.picolib.ResultSet;
-import com.sun.jna.Pointer;
+import com.sun.jna.Pointer; // NOSONAR
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Converts the integer based values to float based voltages.
@@ -86,61 +88,74 @@ class ResultSetConverter {
 
       int steps = numberOfSamples / threadsPerCalc;
       for (int i = 0; i < channelDatas.size(); i++) {
-        Pointer channel = channelDatas.get(i);
-        // Only Process when there is data
-        if (null != channel) {
-          // Calculate the multiplier for this channel
-          ChannelSettings cs = channelSettings.get(i);
-          float multiplier = ((float) cs.getRange().getValue() / 1000) / maxDataValue;
-          
-          // Create Float Array
-          float[] convertedData = new float[numberOfSamples];
-          
-          switch (i) {
-            case 0:
-              rs.setChannelA(convertedData);
-              break;
-            case 1:
-              rs.setChannelB(convertedData);
-              break;
-            case 2:
-              rs.setChannelC(convertedData);
-              break;
-            case 3:
-              rs.setChannelD(convertedData);
-              break;
-            default:
-              break;
-          }
-          
-          // Create Threads and start them
-          for (int threadCnt = 0; threadCnt < threadsPerCalc; threadCnt++) {
-            int start = threadCnt * steps;
-            int end = (threadCnt + 1) * steps;
-            if (threadCnt + 1 == threadsPerCalc) {
-              end = numberOfSamples;
-            }
-
-            threads.add(calculateValues(start, 
-                                        end, 
-                                        channel.getShortArray(0, numberOfSamples), 
-                                        convertedData, 
-                                        multiplier));
-          }
-        }
+        convertChannelData(i, rs, steps, threads);
       }
       
       // Wait for all Threads to be finished
-      threads.forEach((t) -> {
+      threads.forEach(t -> {
         try {
           t.join();
-        } catch (InterruptedException e) {
-          System.err.println("ResultSet Convertion interrupted." + e.getMessage());
+        } catch (InterruptedException ex) {
+          Logger.getLogger(PicoScope2000.class.getName()).log(Level.SEVERE, null, ex);
+          Thread.currentThread().interrupt();
         }
       });
     }
 
     return rs;
+  }
+
+  private void convertChannelData(int i, ResultSet rs, int steps, List<Thread> threads) {
+    Pointer channel = channelDatas.get(i);
+    // Only Process when there is data
+    if (null != channel) {
+      // Calculate the multiplier for this channel
+      ChannelSettings cs = channelSettings.get(i);
+      float multiplier = ((float) cs.getRange().getValue() / 1000) / maxDataValue;
+
+      // Create Float Array
+      float[] convertedData = new float[numberOfSamples];
+
+      switch (i) {
+        case 0:
+          rs.setChannelA(convertedData);
+          break;
+        case 1:
+          rs.setChannelB(convertedData);
+          break;
+        case 2:
+          rs.setChannelC(convertedData);
+          break;
+        case 3:
+          rs.setChannelD(convertedData);
+          break;
+        default:
+          break;
+      }
+
+      createThreads(steps, threads, channel, convertedData, multiplier);
+    }
+  }
+
+  private void createThreads(int steps, 
+          List<Thread> threads, 
+          Pointer channel, 
+          float[] convertedData, 
+          float multiplier) {
+    // Create Threads and start them
+    for (int threadCnt = 0; threadCnt < threadsPerCalc; threadCnt++) {
+      int start = threadCnt * steps;
+      int end = (threadCnt + 1) * steps;
+      if (threadCnt + 1 == threadsPerCalc) {
+        end = numberOfSamples;
+      }
+
+      threads.add(calculateValues(start,
+              end,
+              channel.getShortArray(0, numberOfSamples),
+              convertedData,
+              multiplier));
+    }
   }
 
   private Thread calculateValues(int start, 

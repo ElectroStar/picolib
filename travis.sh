@@ -176,6 +176,7 @@ checkCodeQuality() {
     if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then
       echo "Checking Code Quality with Sonar for Pull Request"  
       sonar_options="-Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} -Dsonar.pullrequest.branch=${TRAVIS_PULL_REQUEST_BRANCH} -Dsonar.pullrequest.base=${TRAVIS_BRANCH} ${sonar_options}"
+      git fetch origin "${TRAVIS_BRANCH}:refs/remotes/origin/${TRAVIS_BRANCH}"
     else
       if [ ${TRAVIS_BRANCH} != "master" ]; then
         # Determinate the target branch
@@ -189,6 +190,8 @@ checkCodeQuality() {
         fi
         sonar_options="-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.branch.target=${target_branch} ${sonar_options}"
         echo "Checking Code Quality with Sonar for branch ${TRAVIS_BRANCH} targetting branch ${target_branch}"
+        # Fetch origin refs for the target branch
+        git fetch origin "${target_branch}:refs/remotes/origin/${target_branch}"
       else
         echo "Checking Code Quality with Sonar for branch ${TRAVIS_BRANCH}"
       fi
@@ -343,7 +346,12 @@ importGPG() {
 #
 mavenDeploy() {
   echo "Deploying Jars"
-  mvn $MAVEN_CLI_OPTS deploy site -s ci_settings.xml -Pjacoco,deploy -DskipTests=true
+  SONATYPE_USERNAME=$(echo ${SONATYPE_USERNAME} | base64 --decode)
+  if [ ${IS_RELEASE} ]; then
+    mvn $MAVEN_CLI_OPTS deploy site -s ci_settings.xml -Pjacoco,deploy -DskipTests=true
+  else
+    mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml -Pdeploy -DskipTests=true
+  fi
 }
 
 #

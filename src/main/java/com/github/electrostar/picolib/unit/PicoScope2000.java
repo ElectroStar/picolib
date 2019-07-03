@@ -39,11 +39,11 @@ import com.github.electrostar.picolib.exception.NotSupportedException;
 import com.github.electrostar.picolib.exception.PicoException;
 import com.github.electrostar.picolib.exception.UnitNotFoundException;
 import com.github.electrostar.picolib.library.PS2000CLibrary;
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.ShortByReference;
+import com.sun.jna.Memory; // NOSONAR
+import com.sun.jna.Native; // NOSONAR
+import com.sun.jna.Pointer; // NOSONAR
+import com.sun.jna.ptr.IntByReference; // NOSONAR
+import com.sun.jna.ptr.ShortByReference; // NOSONAR
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -75,7 +75,7 @@ import java.util.logging.Logger;
 final class PicoScope2000 implements PicoUnit {
 
   private static final int MAX_CHANNELS = 2;
-  private static final UnitSeries UNIT_SERIES = UnitSeries.PicoScope2000er;
+  private static final UnitSeries UNIT_SERIES = UnitSeries.PICOSCOPE2000;
   
   private final List<ChannelSettings> channels = new ArrayList<>(MAX_CHANNELS);
   private final PS2000CLibrary library;
@@ -120,7 +120,7 @@ final class PicoScope2000 implements PicoUnit {
   }
   
   @Override
-  public void open() throws UnitNotFoundException, PicoException {
+  public void open() throws PicoException {
     checkNotOpen();
     handle = library.ps2000_open_unit();
     if (handle == 0) {
@@ -130,13 +130,13 @@ final class PicoScope2000 implements PicoUnit {
     }
   }
 
-  private void checkNotOpen() throws IllegalStateException {
+  private void checkNotOpen() {
     if (handle > 0) {
       throw new IllegalStateException("Unit already open.");
     }
   }
 
-  private void checkOpen() throws IllegalStateException {
+  private void checkOpen() {
     if (handle <= 0) {
       throw new IllegalStateException("Unit is not open.");
     }
@@ -195,7 +195,7 @@ final class PicoScope2000 implements PicoUnit {
   }
 
   @Override
-  public void stop() throws IllegalStateException {
+  public void stop() {
     checkOpen();
     library.ps2000_stop(handle);
     streaming = false;
@@ -221,17 +221,7 @@ final class PicoScope2000 implements PicoUnit {
 
   @Override
   public Timebase setTimebase(Timebase sb) throws ConfigurationException {
-    if (sb.getDivisions() <= 0 || sb.getDivisions() > 10) {
-      throw new IllegalArgumentException("Divisions are out of range.");
-    }
-    
-    if (sb.getOversample() < 1 || sb.getOversample() > 255) {
-      throw new IllegalArgumentException("Oversampling value must be beetween 1 and 255.");
-    }
-
-    if (sb.getMinSamples() < 1) {
-      throw new IllegalArgumentException("Min Samples must be 1 or greater.");
-    }
+    checkTimebaseOptions(sb);
 
     short timebaseId = 0;
     boolean found = false;
@@ -255,7 +245,7 @@ final class PicoScope2000 implements PicoUnit {
           t.setCollectionTime(sb.getCollectionTime());
           t.setDivisions(sb.getDivisions());
           t.setSamples((int) neededSamples);
-          t.setTimebase(timebaseId);
+          t.setInternalTimebaseId(timebaseId);
           t.setMinSamples(sb.getMinSamples());
         }
       }
@@ -269,13 +259,27 @@ final class PicoScope2000 implements PicoUnit {
 
     if (found) {
       this.timebase = t;
+      return t;
+    } else {
+      return null;
     }
-
-    return found ? t : null;
   }
 
-  private Timebase tryTimebase(short timebase, int numberOfSamples, short oversampling) 
-          throws IllegalStateException, IllegalArgumentException {
+  private void checkTimebaseOptions(Timebase sb) {
+    if (sb.getDivisions() <= 0 || sb.getDivisions() > 10) {
+      throw new IllegalArgumentException("Divisions are out of range.");
+    }
+
+    if (sb.getOversample() < 1 || sb.getOversample() > 255) {
+      throw new IllegalArgumentException("Oversampling value must be beetween 1 and 255.");
+    }
+
+    if (sb.getMinSamples() < 1) {
+      throw new IllegalArgumentException("Min Samples must be 1 or greater.");
+    }
+  }
+
+  private Timebase tryTimebase(short timebase, int numberOfSamples, short oversampling) {
     checkOpen();
 
     IntByReference timeInterval = new IntByReference(0);
@@ -348,8 +352,7 @@ final class PicoScope2000 implements PicoUnit {
   }
 
   @Override
-  public void registerCallback(OnDataCallback callback) 
-          throws IllegalStateException, ConfigurationException {
+  public void registerCallback(OnDataCallback callback) throws ConfigurationException {
     checkOpen();
     checkTimebase();
 
@@ -377,6 +380,7 @@ final class PicoScope2000 implements PicoUnit {
           }
         } catch (InterruptedException ex) {
           Logger.getLogger(PicoScope2000.class.getName()).log(Level.SEVERE, null, ex);
+          Thread.currentThread().interrupt();
         }
       }
       deviceCallback = null;
@@ -481,7 +485,7 @@ final class PicoScope2000 implements PicoUnit {
     trigger = settings;
   }
 
-  private short calculateThreshold(Range range, double value) throws IllegalArgumentException {
+  private short calculateThreshold(Range range, double value) {
     double mvRange = range.getValue();
 
     if (value > mvRange || value < (mvRange * -1)) {
@@ -517,7 +521,7 @@ final class PicoScope2000 implements PicoUnit {
     generator = settings;
   }
 
-  private void checkTimebase() throws IllegalStateException {
+  private void checkTimebase() {
     if (null == timebase) {
       throw new IllegalStateException("Timebase was not set.");
     }
@@ -528,11 +532,11 @@ final class PicoScope2000 implements PicoUnit {
     checkOpen();
     checkTimebase();
     IntByReference timeIndisposedMs = new IntByReference(0);
-    short r = library.ps2000_run_block(handle, 
-                                                       timebase.getSamples(), 
-                                                       timebase.getTimebase(), 
-                                                       timebase.getOversample(), 
-                                                       timeIndisposedMs);
+    short r = library.ps2000_run_block(handle,
+            timebase.getSamples(),
+            timebase.getInternalTimebaseId(),
+            timebase.getOversample(),
+            timeIndisposedMs);
     if (r == 0) {
       throw new ConfigurationException("Could not run block. Check timebase configuration.");
     }
@@ -547,11 +551,11 @@ final class PicoScope2000 implements PicoUnit {
     Memory chABufferPointer;
     Memory chBBufferPointer;
     
-    timesPointer = new Memory(timebase.getSamples() * Native.getNativeSize(Integer.TYPE));
+    timesPointer = new Memory((long)timebase.getSamples() * Native.getNativeSize(Integer.TYPE));
     chABufferPointer = channels.get(0).isEnabled() 
-            ? new Memory(timebase.getSamples() * Native.getNativeSize(Short.TYPE)) : null;
+            ? new Memory((long)timebase.getSamples() * Native.getNativeSize(Short.TYPE)) : null;
     chBBufferPointer = channels.get(1).isEnabled() 
-            ? new Memory(timebase.getSamples() * Native.getNativeSize(Short.TYPE)) : null;
+            ? new Memory((long)timebase.getSamples() * Native.getNativeSize(Short.TYPE)) : null;
 
     ShortByReference overflow = new ShortByReference((short) 0);
 

@@ -30,6 +30,10 @@ import com.github.electrostar.picolib.UnitInfo;
  */
 class UnitHelper {
 
+  private UnitHelper() {
+  }
+
+  
   /**
    * Checks if one variant is supported by one unit in form of its {@link UnitInfo}.
    * 

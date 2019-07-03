@@ -50,7 +50,6 @@ public class UnitInfo {
    * @param batchAndSerial the batch and serial number of the oscilloscope.
    * @param calibrationDate the calibration date of the oscilloscope.
    * @param kernelVersion the versionnumber of the kernel driver.
-   * @param driverPath the path of the driver.
    */
   public UnitInfo(String driverVersion, 
           String usbVersion, 
@@ -58,8 +57,7 @@ public class UnitInfo {
           String variantInfo, 
           String batchAndSerial, 
           String calibrationDate, 
-          String kernelVersion, 
-          String driverPath) {
+          String kernelVersion) {
     this.driverVersion = driverVersion;
     this.usbVersion = usbVersion;
     this.hardwareVersion = hardwareVersion;
@@ -67,7 +65,6 @@ public class UnitInfo {
     this.batchAndSerial = batchAndSerial;
     this.calibrationDate = calibrationDate;
     this.kernelVersion = kernelVersion;
-    this.driverPath = driverPath;
   }
 
   /**
@@ -82,8 +79,9 @@ public class UnitInfo {
             u.variantInfo, 
             u.batchAndSerial, 
             u.calibrationDate, 
-            u.kernelVersion, 
-            u.driverPath);
+            u.kernelVersion);
+    
+    this.driverPath = u.driverPath;
   }
 
   /**
