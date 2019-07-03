@@ -292,7 +292,7 @@ public class PicoScope implements AutoCloseable {
    *
    * @throws IllegalStateException if instance is not opened.
    */
-  public void stop() throws IllegalStateException {
+  public void stop() {
     checkUnit();
 
     unit.stop();

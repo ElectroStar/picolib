@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP" />
+    <Class name="com.github.electrostar.picolib.ResultSet" />
+    <Or>
+      <Method name="getTimes" params="" returns="int[]" />
+      <Method name="getChannelA" params="" returns="float[]" />
+      <Method name="getChannelB" params="" returns="float[]" />
+      <Method name="getChannelC" params="" returns="float[]" />
+      <Method name="getChannelD" params="" returns="float[]" />
+    </Or>
+  </Match>
+  <Match>
+    <Bug pattern="EI_EXPOSE_REP2" />
+    <Class name="com.github.electrostar.picolib.ResultSet" />
+    <Or>
+      <Method name="setTimes" params="int[]" returns="void" />
+      <Method name="setChannelA" params="float[]" returns="void" />
+      <Method name="setChannelB" params="float[]" returns="void" />
+      <Method name="setChannelC" params="float[]" returns="void" />
+      <Method name="setChannelD" params="float[]" returns="void" />
+    </Or>
+  </Match>
+</FindBugsFilter>
