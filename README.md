@@ -44,7 +44,7 @@ dependencies {
 ### Java
 ```java
 ResultSet rs;
-try(PicoScope ps = new PicoScope(UnitSeries.PicoScope2000er)) {
+try(PicoScope ps = new PicoScope(UnitSeries.PICOSCOPE2000)) {
   ps.setChannel(Channel.CHANNEL_A, Coupling.DC, Range.RANGE_10V);
   ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.FALLING, 2000f);
   ps.setTimebase(CollectionTime.DIV20MS);

@@ -32,51 +32,51 @@ import java.util.List;
 public enum UnitSeries {
 
   /**
-   * PicoScope 2000er series PC Oscilloscope.
+   * PicoScope 2000 series PC Oscilloscope.
    */
-  PicoScope2000er("PicoScope 2000er series PC Oscilloscope", "2000", 
+  PICOSCOPE2000("PicoScope 2000 series PC Oscilloscope", "2000", 
           new int[]{0x1007, 0x1200}),
 
   /**
-   * PicoScope 2000Aer series PC Oscilloscope.
+   * PicoScope 2000A series PC Oscilloscope.
    */
-  PicoScope2000Aer("PicoScope 2000Aer series PC Oscilloscope", "2000A", 
+  PICOSCOPE2000A("PicoScope 2000A series PC Oscilloscope", "2000A", 
           new int[]{0x1016}),
 
   /**
-   * PicoScope 3000er series PC Oscilloscope.
+   * PicoScope 3000 series PC Oscilloscope.
    */
-  PicoScope3000er("PicoScope 3000er series PC Oscilloscope", "3000", 
+  PICOSCOPE3000("PicoScope 3000 series PC Oscilloscope", "3000", 
           new int[]{0x1001, 0x1201, 0x1211}),
 
   /**
-   * PicoScope 3000Aer series PC Oscilloscope.
+   * PicoScope 3000A series PC Oscilloscope.
    */
-  PicoScope3000Aer("PicoScope 3000Aer series PC Oscilloscope", "3000A", 
+  PICOSCOPE3000A("PicoScope 3000A series PC Oscilloscope", "3000A", 
           new int[]{0x1012}),
 
   /**
    * PicoScope 4000er series PC Oscilloscope.
    */
-  PicoScope4000er("PicoScope 4000er series PC Oscilloscope", "4000", 
+  PICOSCOPE4000("PicoScope 4000 series PC Oscilloscope", "4000", 
           new int[]{0x1009, 0x1202, 0x1212}),
 
   /**
-   * PicoScope 4000Aer series PC Oscilloscope.
+   * PicoScope 4000A series PC Oscilloscope.
    */
-  PicoScope4000Aer("PicoScope 4000Aer series PC Oscilloscope", "4000A", 
+  PICOSCOPE4000A("PicoScope 4000A series PC Oscilloscope", "4000A", 
           new int[]{0x1018}),
 
   /**
-   * PicoScope 5000er series PC Oscilloscope.
+   * PicoScope 5000 series PC Oscilloscope.
    */
-  PicoScope5000er("PicoScope 5000er series PC Oscilloscope", "5000", 
+  PICOSCOPE5000("PicoScope 5000 series PC Oscilloscope", "5000", 
           new int[]{0x1008, 0x1203}),
 
   /**
-   * PicoScope 6000er series PC Oscilloscope.
+   * PicoScope 6000 series PC Oscilloscope.
    */
-  PicoScope6000er("PicoScope 6000er series PC Oscilloscope", "6000", 
+  PICOSCOPE6000("PicoScope 6000 series PC Oscilloscope", "6000", 
           new int[]{0x100e, 0x1204});
 
   private final String description;

@@ -20,10 +20,9 @@
 
 package com.github.electrostar.picolib.unit;
 
-import com.github.electrostar.picolib.unit.UnitHelper;
+import com.github.electrostar.picolib.UnitInfo;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import com.github.electrostar.picolib.UnitInfo;
 
 /**
  *
@@ -39,8 +38,6 @@ public class UnitHelperTest {
    */
   @Test
   public void testIsSupported() {
-    UnitHelper uh = new UnitHelper();
-    
     String[] variants1 = new String[] {"3", "2", "1"};
     String[] variants2 = new String[] {"1"};
     

@@ -20,27 +20,6 @@
 
 package com.github.electrostar.picolib.unit;
 
-import com.github.electrostar.picolib.unit.PicoScope2000;
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.ShortByReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.AdditionalMatchers.or;
-import org.mockito.Mock;
-import static org.mockito.Mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import com.github.electrostar.picolib.Channel;
 import com.github.electrostar.picolib.ChannelSettings;
 import com.github.electrostar.picolib.CollectionTime;
@@ -63,6 +42,28 @@ import com.github.electrostar.picolib.exception.NotSupportedException;
 import com.github.electrostar.picolib.exception.PicoException;
 import com.github.electrostar.picolib.exception.UnitNotFoundException;
 import com.github.electrostar.picolib.library.PS2000CLibrary;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.ShortByReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import org.awaitility.Awaitility;
+import org.awaitility.Duration;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.AdditionalMatchers.or;
+import org.mockito.Mock;
+import static org.mockito.Mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 /**
  * Tests for the {@link PicoScope2000} class.
@@ -88,8 +89,7 @@ public class PicoScope2000Test {
                                             VARIANT_INFO, 
                                             BATCH_AND_SERIAL, 
                                             CAL_DATE, 
-                                            KERNAL_DRIVER_VERSION, 
-                                            DRIVER_PATH);
+                                            KERNAL_DRIVER_VERSION);
   
   private final OnDataCallback callback = (ResultSet rs) -> {
   };
@@ -100,6 +100,7 @@ public class PicoScope2000Test {
   private PicoScope2000 ps;
   
   public PicoScope2000Test() {
+    ui.setDriverPath(DRIVER_PATH);
   }
   
   @BeforeAll
@@ -273,7 +274,9 @@ public class PicoScope2000Test {
   public void testClose() {
     ps.close();
     
-    new PicoScope2000(mockLib).close();
+    assertDoesNotThrow(() -> {
+      new PicoScope2000(mockLib).close();
+    });
   }
 
   /**
@@ -291,7 +294,9 @@ public class PicoScope2000Test {
    */
   @Test
   public void testStop() {
-    ps.stop();
+    assertDoesNotThrow(() -> {
+      ps.stop();
+    });
   }
 
   /**
@@ -356,8 +361,12 @@ public class PicoScope2000Test {
     // Test working example
     mockTimebase();
     
-    Timebase result = new Timebase(CollectionTime.DIV1MS, 10, 15625, 640, TimeUnit.NANOSECOND, 
-                                   16256, (short)7, (short)1, 1);
+    Timebase result = new Timebase(CollectionTime.DIV1MS, 10, (short)1, 1);
+    result.setSamples(15625);
+    result.setTimeInterval(640);
+    result.setTimeUnit(TimeUnit.NANOSECOND);
+    result.setMaxSamples(16256);
+    result.setInternalTimebaseId((short)7);
     
     assertEquals(ps.setTimebase(new Timebase()), result);
     
@@ -451,7 +460,7 @@ public class PicoScope2000Test {
     
     ps.registerCallback(callback);
     
-    Thread.sleep(10);
+    Awaitility.await().pollDelay(10, java.util.concurrent.TimeUnit.MILLISECONDS).until(() -> true);
     
     when(mockLib.ps2000_get_streaming_last_values(anyShort(), 
             any(PS2000CLibrary.GetOverviewBuffersMaxMin.class)))
@@ -465,7 +474,7 @@ public class PicoScope2000Test {
     // Stop Streaming
     ps.stop();
     
-    Thread.sleep(1000);
+    Awaitility.await().pollDelay(Duration.ONE_SECOND).until(() -> true);
     
     // Start again
     ps.runStreaming();
@@ -500,7 +509,7 @@ public class PicoScope2000Test {
    */
   @Test
   public void testGetUnitSeries() {
-    assertEquals(UnitSeries.PicoScope2000er, ps.getUnitSeries());
+    assertEquals(UnitSeries.PICOSCOPE2000, ps.getUnitSeries());
   }
 
   /**

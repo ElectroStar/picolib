@@ -36,7 +36,7 @@ public class Timebase {
   private int timeInterval;
   private TimeUnit timeUnit;
   private int maxSamples;
-  private short timebase;
+  private short internalTimebaseId;
   private short oversample;
   private int minSamples;
 
@@ -49,11 +49,6 @@ public class Timebase {
   public Timebase() {
     this(CollectionTime.DIV1MS, 
             10, 
-            0, 
-            0, 
-            TimeUnit.MICROSECOND, 
-            0, 
-            (short) 0, 
             (short) 1, 
             1);
   }
@@ -66,11 +61,6 @@ public class Timebase {
   public Timebase(CollectionTime collectionTime) {
     this(collectionTime, 
             10, 
-            0, 
-            0, 
-            TimeUnit.MICROSECOND, 
-            0, 
-            (short) 0, 
             (short) 1, 
             1);
   }
@@ -84,11 +74,6 @@ public class Timebase {
   public Timebase(CollectionTime collectionTime, int divisions) {
     this(collectionTime, 
             divisions, 
-            0, 
-            0, 
-            TimeUnit.MICROSECOND, 
-            0, 
-            (short) 0, 
             (short) 1, 
             1);
   }
@@ -103,11 +88,6 @@ public class Timebase {
   public Timebase(CollectionTime collectionTime, int divisions, int minSamples) {
     this(collectionTime,
             divisions, 
-            0, 
-            0, 
-            TimeUnit.MICROSECOND, 
-            0, 
-            (short) 0, 
             (short) 1, 
             minSamples);
   }
@@ -121,15 +101,16 @@ public class Timebase {
    * @param minSamples the number of the minimum needed samples per recorded {@link ResultSet}.
    */
   public Timebase(CollectionTime collectionTime, int divisions, short oversample, int minSamples) {
-    this(collectionTime, 
-            divisions, 
-            0, 
-            0, 
-            TimeUnit.MICROSECOND, 
-            0, 
-            (short) 0, 
-            oversample, 
-            minSamples);
+    this.collectionTime = collectionTime;
+    this.divisions = divisions;
+    this.oversample = oversample;
+    this.minSamples = minSamples;
+    
+    this.samples = 0;
+    this.timeInterval = 0;
+    this.timeUnit = TimeUnit.MICROSECOND;
+    this.maxSamples = 0;
+    this.internalTimebaseId = (short)0;
   }
 
   /**
@@ -142,47 +123,8 @@ public class Timebase {
   public Timebase(CollectionTime collectionTime, int divisions, short oversample) {
     this(collectionTime, 
             divisions, 
-            0, 
-            0, 
-            TimeUnit.MICROSECOND, 
-            0, 
-            (short) 0, 
             oversample, 
             1);
-  }
-
-  /**
-   * Create Timebase Setting.
-   * 
-   * @param collectionTime the {@link CollectionTime} for one division.
-   * @param divisions the number of divisions.
-   * @param samples the number of samples.
-   * @param timeInterval the time interval between two samples.
-   * @param timeUnit the {@link TimeUnit} of the driver.
-   * @param maxSamples the maximum number of samples which could be recorded in one 
-   *                   {@link ResultSet}
-   * @param timebase the internal timebase number.
-   * @param oversample the number of oversamples.
-   * @param minSamples the number of the minimum needed samples per recorded {@link ResultSet}.
-   */
-  public Timebase(CollectionTime collectionTime, 
-          int divisions, 
-          int samples, 
-          int timeInterval, 
-          TimeUnit timeUnit, 
-          int maxSamples, 
-          short timebase, 
-          short oversample, 
-          int minSamples) {
-    this.collectionTime = collectionTime;
-    this.divisions = divisions;
-    this.samples = samples;
-    this.timeInterval = timeInterval;
-    this.timeUnit = timeUnit;
-    this.maxSamples = maxSamples;
-    this.timebase = timebase;
-    this.oversample = oversample;
-    this.minSamples = minSamples;
   }
 
   /**
@@ -299,17 +241,17 @@ public class Timebase {
    * 
    * @return internal Timebase number.
    */
-  public short getTimebase() {
-    return timebase;
+  public short getInternalTimebaseId() {
+    return internalTimebaseId;
   }
 
   /**
    * Sets the internal Timebase number of the driver.
    * 
-   * @param timebase new timebase.
+   * @param internalTimebaseId new timebase.
    */
-  public void setTimebase(short timebase) {
-    this.timebase = timebase;
+  public void setInternalTimebaseId(short internalTimebaseId) {
+    this.internalTimebaseId = internalTimebaseId;
   }
 
   /**
@@ -357,7 +299,7 @@ public class Timebase {
     hash = 79 * hash + this.timeInterval;
     hash = 79 * hash + Objects.hashCode(this.timeUnit);
     hash = 79 * hash + this.maxSamples;
-    hash = 79 * hash + this.timebase;
+    hash = 79 * hash + this.internalTimebaseId;
     hash = 79 * hash + this.oversample;
     hash = 79 * hash + this.minSamples;
     return hash;
@@ -387,7 +329,7 @@ public class Timebase {
     if (this.maxSamples != other.maxSamples) {
       return false;
     }
-    if (this.timebase != other.timebase) {
+    if (this.internalTimebaseId != other.internalTimebaseId) {
       return false;
     }
     if (this.oversample != other.oversample) {
@@ -406,7 +348,7 @@ public class Timebase {
   public String toString() {
     return "Timebase{" + "collectionTime=" + collectionTime + ", divisions=" + divisions 
             + ", samples=" + samples + ", timeInterval=" + timeInterval + ", timeUnit=" + timeUnit 
-            + ", maxSamples=" + maxSamples + ", timebase=" + timebase + ", oversample=" + oversample
-            + ", minSamples=" + minSamples + '}';
+            + ", maxSamples=" + maxSamples + ", internalTimebaseId=" + internalTimebaseId 
+            + ", oversample=" + oversample + ", minSamples=" + minSamples + '}';
   }
 }

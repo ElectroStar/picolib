@@ -20,24 +20,11 @@
 
 package com.github.electrostar.picolib;
 
-import com.github.electrostar.picolib.Range;
-import com.github.electrostar.picolib.OnDataCallback;
-import com.github.electrostar.picolib.Timebase;
-import com.github.electrostar.picolib.Coupling;
-import com.github.electrostar.picolib.UnitInfo;
-import com.github.electrostar.picolib.PicoScope;
-import com.github.electrostar.picolib.EtsSettings;
-import com.github.electrostar.picolib.SweepType;
-import com.github.electrostar.picolib.WaveType;
-import com.github.electrostar.picolib.ChannelSettings;
-import com.github.electrostar.picolib.CollectionTime;
-import com.github.electrostar.picolib.ResultSet;
-import com.github.electrostar.picolib.UnitSeries;
-import com.github.electrostar.picolib.EtsMode;
-import com.github.electrostar.picolib.GeneratorSettings;
-import com.github.electrostar.picolib.Channel;
-import com.github.electrostar.picolib.TriggerDirection;
-import com.github.electrostar.picolib.TriggerSettings;
+import com.github.electrostar.picolib.exception.ConfigurationException;
+import com.github.electrostar.picolib.exception.NotSupportedException;
+import com.github.electrostar.picolib.exception.PicoException;
+import com.github.electrostar.picolib.unit.PicoUnit;
+import com.github.electrostar.picolib.unit.UnitFactory;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,10 +36,6 @@ import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import com.github.electrostar.picolib.exception.ConfigurationException;
-import com.github.electrostar.picolib.exception.PicoException;
-import com.github.electrostar.picolib.unit.PicoUnit;
-import com.github.electrostar.picolib.unit.UnitFactory;
 
 /**
  * Tests for the {@link PicoScope} class.
@@ -86,7 +69,7 @@ public class PicoScopeTest {
 
     when(mockFactory.getUnit(any(UnitSeries.class))).thenReturn(mockUnit);
 
-    ps.open(UnitSeries.PicoScope2000er);
+    ps.open(UnitSeries.PICOSCOPE2000);
 
     when(mockUnit.isOpen()).thenReturn(true);
   }
@@ -105,7 +88,7 @@ public class PicoScopeTest {
   public void testConstructor() {
 
     // Test null constructor
-    assertThrows(NullPointerException.class, () -> {
+    assertThrows(NotSupportedException.class, () -> {
       new PicoScope((UnitSeries) null);
     });
   }
@@ -119,7 +102,7 @@ public class PicoScopeTest {
     PicoScope noFactory = new PicoScope((UnitFactory) null);
 
     assertThrows(IllegalStateException.class, () -> {
-      noFactory.open(UnitSeries.PicoScope2000er);
+      noFactory.open(UnitSeries.PICOSCOPE2000);
     });
   }
 
@@ -132,12 +115,12 @@ public class PicoScopeTest {
   public void testOpen() throws Exception {
     // Test already open
     assertThrows(IllegalStateException.class, () -> {
-      ps.open(UnitSeries.PicoScope2000er);
+      ps.open(UnitSeries.PICOSCOPE2000);
     });
 
     // Test was open
     when(mockUnit.isOpen()).thenReturn(false);
-    ps.open(UnitSeries.PicoScope2000er);
+    ps.open(UnitSeries.PICOSCOPE2000);
   }
 
   /**
@@ -149,9 +132,9 @@ public class PicoScopeTest {
       unopendPS.getUnitSeries();
     });
 
-    when(mockUnit.getUnitSeries()).thenReturn(UnitSeries.PicoScope2000er);
+    when(mockUnit.getUnitSeries()).thenReturn(UnitSeries.PICOSCOPE2000);
 
-    assertEquals(UnitSeries.PicoScope2000er, ps.getUnitSeries());
+    assertEquals(UnitSeries.PICOSCOPE2000, ps.getUnitSeries());
   }
 
   /**
@@ -163,7 +146,8 @@ public class PicoScopeTest {
       unopendPS.getInfo();
     });
 
-    UnitInfo ui = new UnitInfo("1", "2", "3", "4", "5", "6", "7", "8");
+    UnitInfo ui = new UnitInfo("1", "2", "3", "4", "5", "6", "7");
+    ui.setDriverPath("8");
 
     when(mockUnit.getInfo()).thenReturn(ui);
 
@@ -201,7 +185,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetChannel_3args() throws Exception {
-    ps.setChannel(Channel.CHANNEL_A, Coupling.AC, Range.RANGE_1V);
+    assertDoesNotThrow(() -> {
+      ps.setChannel(Channel.CHANNEL_A, Coupling.AC, Range.RANGE_1V);
+    });
   }
 
   /**
@@ -211,7 +197,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetChannel_4args() throws Exception {
-    ps.setChannel(Channel.CHANNEL_A, Coupling.AC, Range.RANGE_1V, 0);
+    assertDoesNotThrow(() -> {
+      ps.setChannel(Channel.CHANNEL_A, Coupling.AC, Range.RANGE_1V, 0);
+    });
   }
 
   /**
@@ -231,7 +219,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetTrigger_3args() throws Exception {
-    ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.RISING, 0);
+    assertDoesNotThrow(() -> {
+      ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.RISING, 0);
+    });
   }
 
   /**
@@ -241,7 +231,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetTrigger_4args() throws Exception {
-    ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.RISING, 0, 0);
+    assertDoesNotThrow(() -> {
+      ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.RISING, 0, 0);
+    });
   }
 
   /**
@@ -251,7 +243,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetTrigger_5args() throws Exception {
-    ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.RISING, 0, 0, (short) 0);
+    assertDoesNotThrow(() -> {
+      ps.setTrigger(Channel.CHANNEL_A, TriggerDirection.RISING, 0, 0, (short) 0);
+    });
   }
 
   /**
@@ -291,7 +285,9 @@ public class PicoScopeTest {
   public void testSetTimebase_CollectionTime() throws Exception {
     when(mockUnit.setTimebase(any(Timebase.class))).then(returnsFirstArg());
 
-    ps.setTimebase(CollectionTime.DIV1MS);
+    assertDoesNotThrow(() -> {
+      ps.setTimebase(CollectionTime.DIV1MS);
+    });
   }
 
   /**
@@ -303,7 +299,9 @@ public class PicoScopeTest {
   public void testSetTimebase_CollectionTime_int() throws Exception {
     when(mockUnit.setTimebase(any(Timebase.class))).then(returnsFirstArg());
 
-    ps.setTimebase(CollectionTime.DIV1MS, 10);
+    assertDoesNotThrow(() -> {
+      ps.setTimebase(CollectionTime.DIV1MS, 10);
+    });
   }
 
   /**
@@ -315,7 +313,9 @@ public class PicoScopeTest {
   public void testSetTimebase_3args_1() throws Exception {
     when(mockUnit.setTimebase(any(Timebase.class))).then(returnsFirstArg());
 
-    ps.setTimebase(CollectionTime.DIV1MS, 10, 5000);
+    assertDoesNotThrow(() -> {
+      ps.setTimebase(CollectionTime.DIV1MS, 10, 5000);
+    });
   }
 
   /**
@@ -327,7 +327,9 @@ public class PicoScopeTest {
   public void testSetTimebase_4args() throws Exception {
     when(mockUnit.setTimebase(any(Timebase.class))).then(returnsFirstArg());
 
-    ps.setTimebase(CollectionTime.DIV1MS, 10, (short) 1, 5000);
+    assertDoesNotThrow(() -> {
+      ps.setTimebase(CollectionTime.DIV1MS, 10, (short) 1, 5000);
+    });
   }
 
   /**
@@ -339,7 +341,9 @@ public class PicoScopeTest {
   public void testSetTimebase_3args_2() throws Exception {
     when(mockUnit.setTimebase(any(Timebase.class))).then(returnsFirstArg());
 
-    ps.setTimebase(CollectionTime.DIV1MS, 10, (short) 1);
+    assertDoesNotThrow(() -> {
+      ps.setTimebase(CollectionTime.DIV1MS, 10, (short) 1);
+    });
   }
 
   /**
@@ -379,7 +383,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetSignalGenerator_3args() throws Exception {
-    ps.setSignalGenerator(WaveType.RAMPUP, 1, 1);
+    assertDoesNotThrow(() -> {
+      ps.setSignalGenerator(WaveType.RAMPUP, 1, 1);
+    });
   }
 
   /**
@@ -389,17 +395,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetSignalGenerator_4args() throws Exception {
-    ps.setSignalGenerator(WaveType.RAMPUP, 0, 0, 0);
-  }
-
-  /**
-   * Test of setSignalGenerator method, of class PicoScope.
-   *
-   * @throws java.lang.Exception if any error occur.
-   */
-  @Test
-  public void testSetSignalGenerator_9args() throws Exception {
-    ps.setSignalGenerator(WaveType.RAMPUP, 0, 0, 0, SweepType.UP, 0, 0, 0, 0);
+    assertDoesNotThrow(() -> {
+      ps.setSignalGenerator(WaveType.RAMPUP, 0, 0, 0);
+    });
   }
 
   /**
@@ -449,7 +447,9 @@ public class PicoScopeTest {
    */
   @Test
   public void testSetModeEts_3args() throws Exception {
-    ps.setModeEts(EtsMode.OFF, 10, 2);
+    assertDoesNotThrow(() -> {
+      ps.setModeEts(EtsMode.OFF, 10, 2);
+    });
   }
 
   /**

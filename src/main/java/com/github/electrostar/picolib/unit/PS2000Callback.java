@@ -25,8 +25,8 @@ import com.github.electrostar.picolib.OnDataCallback;
 import com.github.electrostar.picolib.ResultSet;
 import com.github.electrostar.picolib.Timebase;
 import com.github.electrostar.picolib.library.PS2000CLibrary;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
+import com.sun.jna.Pointer; // NOSONAR
+import com.sun.jna.ptr.PointerByReference; // NOSONAR
 import java.util.ArrayList;
 import java.util.List;
 

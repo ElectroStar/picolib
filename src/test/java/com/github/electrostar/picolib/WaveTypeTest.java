@@ -20,7 +20,6 @@
 
 package com.github.electrostar.picolib;
 
-import com.github.electrostar.picolib.WaveType;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -103,9 +102,9 @@ public class WaveTypeTest {
    */
   @Test
   public void testToStringAndGetLabel() {
-    assertEquals(WaveType.DC_VOLTAGE.toString(), "DCVoltage");
-    assertEquals(WaveType.DC_VOLTAGE.getLabel(), "DCVoltage");
-    assertNotEquals(WaveType.DC_VOLTAGE.getLabel(), "Gaussian");
-    assertNotEquals(WaveType.DC_VOLTAGE.getLabel(), "RampDown");
+    assertEquals("DCVoltage", WaveType.DC_VOLTAGE.toString());
+    assertEquals("DCVoltage", WaveType.DC_VOLTAGE.getLabel());
+    assertNotEquals("Gaussian", WaveType.DC_VOLTAGE.getLabel());
+    assertNotEquals("RampDown", WaveType.DC_VOLTAGE.getLabel());
   }
 }
