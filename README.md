@@ -27,7 +27,7 @@ How to use
 
 ```groovy
 dependencies {
-    implementation 'com.github.electrostar:picolib:0.0.1'
+    implementation 'com.github.electrostar:picolib:0.0.2'
 }
 ```
 
@@ -36,7 +36,7 @@ dependencies {
 <dependency>
   <groupId>com.github.electrostar</groupId>
   <artifactId>picolib</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ```
 
