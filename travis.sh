@@ -343,7 +343,12 @@ importGPG() {
 #
 mavenDeploy() {
   echo "Deploying Jars"
-  mvn $MAVEN_CLI_OPTS deploy site -s ci_settings.xml -Pjacoco,deploy -DskipTests=true
+  SONATYPE_USERNAME=$(echo ${SONATYPE_USERNAME} | base64 --decode)
+  if [ ${IS_RELEASE} ]; then
+    mvn $MAVEN_CLI_OPTS deploy site -s ci_settings.xml -Pjacoco,deploy -DskipTests=true
+  else
+    mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml -Pdeploy -DskipTests=true
+  fi
 }
 
 #
