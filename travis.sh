@@ -189,6 +189,8 @@ checkCodeQuality() {
         fi
         sonar_options="-Dsonar.branch.name=${TRAVIS_BRANCH} -Dsonar.branch.target=${target_branch} ${sonar_options}"
         echo "Checking Code Quality with Sonar for branch ${TRAVIS_BRANCH} targetting branch ${target_branch}"
+        # Fetch origin refs for the target branch
+        git fetch origin "${target_branch}:refs/remotes/origin/${target_branch}"
       else
         echo "Checking Code Quality with Sonar for branch ${TRAVIS_BRANCH}"
       fi
