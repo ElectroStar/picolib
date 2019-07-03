@@ -176,6 +176,7 @@ checkCodeQuality() {
     if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then
       echo "Checking Code Quality with Sonar for Pull Request"  
       sonar_options="-Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} -Dsonar.pullrequest.branch=${TRAVIS_PULL_REQUEST_BRANCH} -Dsonar.pullrequest.base=${TRAVIS_BRANCH} ${sonar_options}"
+      git fetch origin "${target_branch}:refs/remotes/origin/${target_branch}"
     else
       if [ ${TRAVIS_BRANCH} != "master" ]; then
         # Determinate the target branch
