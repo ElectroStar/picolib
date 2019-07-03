@@ -7,10 +7,11 @@ The following is a set of guidelines for contributing to picolib, which is hoste
 #### Table Of Contents
 
 [Code of Conduct](#code-of-conduct)
+
 [How Can I Contribute?](#how-can-i-contribute)
   * [Reporting Bugs](#reporting-bugs)
   * [Getting Started](#getting-started)
-  * [Create the working (supporting) branch](#create-the-working-(supporting)-branch)
+  * [Create the working (supporting) branch](#create-the-working-supporting-branch)
   * [Code](#code)
   * [Commit](#commit)
   * [Submit](#submit)

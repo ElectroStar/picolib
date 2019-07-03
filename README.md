@@ -1,4 +1,4 @@
-picolib [![Build Status](https://travis-ci.com/ElectroStar/picolib.svg?branch=master)](https://travis-ci.com/ElectroStar/picolib) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.github.electrostar%3Apicolib&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.github.electrostar%3Apicolib)
+picolib [![Build Status](https://travis-ci.com/ElectroStar/picolib.svg?branch=master)](https://travis-ci.com/ElectroStar/picolib) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.github.electrostar%3Apicolib&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.github.electrostar%3Apicolib) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.github.electrostar%3Apicolib&metric=coverage)](https://sonarcloud.io/dashboard?id=com.github.electrostar%3Apicolib)
 =========
 
 Java Library to use Pico Technology's PicoScopes
@@ -12,6 +12,12 @@ Links
 * [Java Doc](https://electrostar.github.io/picolib/apidocs/index.html)
 * [Issue tracking](https://github.com/ElectroStar/picolib/issues)
 * [Manufacturer](https://www.picotech.com/products/oscilloscope)
+
+Prerequisites
+--------
+* IDE for Java like [NetBeans](https://netbeans.org/), [Elcipse](https://www.eclipse.org/), [IntelliJ](https://www.jetbrains.com/idea/) or equivalent IDE
+* [Java SE Development Kit 8](https://www.oracle.com/technetwork/java/javase/overview/index.html) or later
+* Installed PicoSDK driver from [Pico Technologies Downloads Page](https://www.picotech.com/downloads)
 
 How to use
 --------
@@ -55,6 +61,10 @@ Implemented Features
 Limitations
 -------
 Currently only the `2000` Series is supported.
+
+Contributing
+-------
+Contributions are welcome. Please refer to our [guidelines for contributing](CONTRIBUTING.md) for further information.
 
 License
 -------
