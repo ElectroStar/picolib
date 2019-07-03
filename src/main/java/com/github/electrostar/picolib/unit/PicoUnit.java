@@ -120,7 +120,7 @@ public interface PicoUnit {
    * @throws UnitNotFoundException if no unit was found.
    * @throws PicoException if function failed.
    */
-  void open() throws UnitNotFoundException, PicoException;
+  void open() throws PicoException;
 
   /**
    * Gets the open unit status.

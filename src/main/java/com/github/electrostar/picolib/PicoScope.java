@@ -57,8 +57,7 @@ public class PicoScope implements AutoCloseable {
    * @throws IllegalStateException if the current instance holds already a connection to an opened
    *                               PicoScope device or no {@link UnitFactory} is set.
    */
-  public PicoScope(UnitSeries unitSeries) throws PicoException,
-          NotSupportedException, UnitNotFoundException, IllegalStateException {
+  public PicoScope(UnitSeries unitSeries) throws PicoException {
     this();
     
     openUnit(unitSeries); 
@@ -84,13 +83,11 @@ public class PicoScope implements AutoCloseable {
    * @throws UnitNotFoundException if no device of the specifying {@link UnitSeries} is connected to
    *                               the computer.
    */
-  public void open(UnitSeries unitSeries) throws IllegalStateException, PicoException,
-          NotSupportedException, UnitNotFoundException {
+  public void open(UnitSeries unitSeries) throws PicoException {
     openUnit(unitSeries);
   }
 
-  private void openUnit(UnitSeries unitSeries) throws IllegalStateException, PicoException,
-          NotSupportedException, UnitNotFoundException {
+  private void openUnit(UnitSeries unitSeries) throws PicoException {
     // Check for already open
     if (null != unit && unit.isOpen()) {
       throw new IllegalStateException("A Unit is already open for this instance.");
@@ -113,13 +110,13 @@ public class PicoScope implements AutoCloseable {
    * @return the unit series of the device.
    * @throws IllegalStateException if instance is not opened.
    */
-  public UnitSeries getUnitSeries() throws IllegalStateException {
+  public UnitSeries getUnitSeries() {
     checkUnit();
 
     return unit.getUnitSeries();
   }
 
-  private void checkUnit() throws IllegalStateException {
+  private void checkUnit() {
     if (null == unit) {
       throw new IllegalStateException("No Unit is given. Open a Unit Device first.");
     }
@@ -131,7 +128,7 @@ public class PicoScope implements AutoCloseable {
    * @return the unit information of the device.
    * @throws IllegalStateException if instance is not opened.
    */
-  public UnitInfo getInfo() throws IllegalStateException {
+  public UnitInfo getInfo() {
     checkUnit();
 
     return unit.getInfo();
@@ -145,8 +142,7 @@ public class PicoScope implements AutoCloseable {
    * @throws NotSupportedException if channel is not supported opened device.
    * @throws ConfigurationException if channel configuration was aborted.
    */
-  public void disableChannel(Channel channel) throws IllegalStateException, NotSupportedException,
-          ConfigurationException {
+  public void disableChannel(Channel channel) throws NotSupportedException, ConfigurationException {
 
     checkUnit();
 
@@ -163,8 +159,8 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a setting is out of range.
    * @throws IllegalArgumentException if a parameter is out of range.
    */
-  public void setChannel(Channel channel, ChannelSettings settings) throws IllegalStateException,
-          NotSupportedException, ConfigurationException, IllegalArgumentException {
+  public void setChannel(Channel channel, ChannelSettings settings) throws NotSupportedException, 
+          ConfigurationException {
 
     checkUnit();
 
@@ -182,9 +178,8 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a setting is out of range.
    * @throws IllegalArgumentException if a parameter is out of range.
    */
-  public void setChannel(Channel channel, Coupling coupling, Range range)
-          throws IllegalStateException, NotSupportedException, ConfigurationException,
-          IllegalArgumentException {
+  public void setChannel(Channel channel, Coupling coupling, Range range) 
+          throws NotSupportedException, ConfigurationException {
 
     ChannelSettings settings = new ChannelSettings(range, coupling, true);
 
@@ -204,8 +199,7 @@ public class PicoScope implements AutoCloseable {
    * @throws IllegalArgumentException if a parameter is out of range.
    */
   public void setChannel(Channel channel, Coupling coupling, Range range, float analogOffset)
-          throws IllegalStateException, NotSupportedException, ConfigurationException,
-          IllegalArgumentException {
+          throws NotSupportedException, ConfigurationException {
 
     ChannelSettings settings = new ChannelSettings(range, coupling, true, analogOffset);
 
@@ -221,8 +215,8 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a setting is out of range.
    * @throws IllegalArgumentException if a parameter is out of range.
    */
-  public void setTrigger(TriggerSettings settings) throws IllegalStateException,
-          NotSupportedException, ConfigurationException, IllegalArgumentException {
+  public void setTrigger(TriggerSettings settings) throws NotSupportedException, 
+          ConfigurationException {
 
     checkUnit();
 
@@ -241,8 +235,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a setting is out of range.
    */
   public void setTrigger(Channel channel, TriggerDirection direction, float threshold)
-          throws IllegalArgumentException, IllegalStateException, NotSupportedException,
-          ConfigurationException {
+          throws NotSupportedException, ConfigurationException {
 
     TriggerSettings settings = new TriggerSettings(channel, direction, threshold);
 
@@ -263,8 +256,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a setting is out of range.
    */
   public void setTrigger(Channel channel, TriggerDirection direction, float threshold, float delay)
-          throws IllegalArgumentException, IllegalStateException, NotSupportedException,
-          ConfigurationException {
+          throws NotSupportedException, ConfigurationException {
 
     TriggerSettings settings = new TriggerSettings(channel, direction, threshold, delay);
 
@@ -290,8 +282,7 @@ public class PicoScope implements AutoCloseable {
    */
   public void setTrigger(Channel channel, TriggerDirection direction, float threshold,
           float delay, short autoTriggerMs)
-          throws IllegalArgumentException, IllegalStateException,
-          NotSupportedException, ConfigurationException {
+          throws NotSupportedException, ConfigurationException {
 
     setTrigger(new TriggerSettings(channel, direction, threshold, delay, autoTriggerMs));
   }
@@ -301,7 +292,7 @@ public class PicoScope implements AutoCloseable {
    *
    * @throws IllegalStateException if instance is not opened.
    */
-  public void stop() throws IllegalStateException {
+  public void stop() {
     checkUnit();
 
     unit.stop();
@@ -314,7 +305,7 @@ public class PicoScope implements AutoCloseable {
    * @throws IllegalStateException if instance is not opened.
    * @throws PicoException if no communication between the library and the device is possible.
    */
-  public boolean ready() throws IllegalStateException, PicoException {
+  public boolean ready() throws PicoException {
     checkUnit();
 
     return unit.ready();
@@ -328,8 +319,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if no configuration could be find for this device for the
    *                                configurated channels and the desired {@link CollectionTime}
    */
-  public void setTimebase(CollectionTime collectionTime) throws IllegalStateException,
-          ConfigurationException {
+  public void setTimebase(CollectionTime collectionTime) throws ConfigurationException {
     setTimebase(new Timebase(collectionTime));
   }
 
@@ -344,7 +334,7 @@ public class PicoScope implements AutoCloseable {
    *                                configurated channels and the desired {@link CollectionTime}
    */
   public void setTimebase(CollectionTime collectionTime, int divisions)
-          throws IllegalStateException, IllegalArgumentException, ConfigurationException {
+          throws ConfigurationException {
     setTimebase(new Timebase(collectionTime, divisions));
   }
 
@@ -360,7 +350,7 @@ public class PicoScope implements AutoCloseable {
    *                                configurated channels and the desired {@link CollectionTime}
    */
   public void setTimebase(CollectionTime collectionTime, int divisions, short oversample)
-          throws IllegalStateException, IllegalArgumentException, ConfigurationException {
+          throws ConfigurationException {
     setTimebase(new Timebase(collectionTime, divisions, oversample));
   }
 
@@ -378,8 +368,7 @@ public class PicoScope implements AutoCloseable {
    *                                configurated channels and the desired {@link CollectionTime}
    */
   public void setTimebase(CollectionTime collectionTime, int divisions, short oversample,
-          int minSamples) throws IllegalStateException, IllegalArgumentException,
-          ConfigurationException {
+          int minSamples) throws ConfigurationException {
     setTimebase(new Timebase(collectionTime, divisions, oversample, minSamples));
   }
 
@@ -395,7 +384,7 @@ public class PicoScope implements AutoCloseable {
    *                                configurated channels and the desired {@link CollectionTime}
    */
   public void setTimebase(CollectionTime collectionTime, int divisions, int minSamples)
-          throws IllegalStateException, IllegalArgumentException, ConfigurationException {
+          throws ConfigurationException {
     setTimebase(new Timebase(collectionTime, divisions, minSamples));
   }
 
@@ -409,8 +398,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if no configuration could be find for this device for the
    *                                configurated channels and the desired {@link CollectionTime}
    */
-  public void setTimebase(Timebase timebase)
-          throws IllegalStateException, IllegalArgumentException, ConfigurationException {
+  public void setTimebase(Timebase timebase) throws ConfigurationException {
     checkUnit();
 
     Timebase t = unit.setTimebase(timebase);
@@ -427,7 +415,7 @@ public class PicoScope implements AutoCloseable {
    * @return Informationen about the Timebase.
    * @throws IllegalStateException if instance is not opened.
    */
-  public Timebase getTimebase() throws IllegalStateException {
+  public Timebase getTimebase() {
     checkUnit();
     
     return unit.getTimebase();
@@ -444,7 +432,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a parameter is out of range.
    */
   public void setSignalGenerator(WaveType waveType, double frequency, double amplitude)
-          throws IllegalStateException, NotSupportedException, ConfigurationException {
+          throws NotSupportedException, ConfigurationException {
     setSignalGenerator(new GeneratorSettings(waveType, frequency, amplitude));
   }
 
@@ -461,41 +449,8 @@ public class PicoScope implements AutoCloseable {
    */
   public void setSignalGenerator(WaveType waveType, double frequency, double amplitude,
           double offset)
-          throws IllegalStateException, NotSupportedException, ConfigurationException {
+          throws NotSupportedException, ConfigurationException {
     setSignalGenerator(new GeneratorSettings(waveType, frequency, amplitude, offset));
-  }
-
-  /**
-   * Set the Signal for the Signal Generator.
-   *
-   * @param waveType       the type of wave of the outcomming signal.
-   * @param startFrequency the starting frequency of the wave in Hertz.
-   * @param amplitude      the amplitude of the signal in volt.
-   * @param offset         the offset of the wave signal.
-   * @param sweepType      the type of the sweep of the outcoming signal.
-   * @param sweeps         the number of sweeps in Hertz.
-   * @param stopFrequency  the stopping frequency of the wave in Hertz.
-   * @param increment      the amount by which the frequency rises or falls every {@code dwellTime}
-   *                       seconds in sweep mode
-   * @param dwellTime      the dwell time of an increment step in Seconds.
-   * @throws IllegalStateException if instance is not opened.
-   * @throws NotSupportedException if a feature is not supported.
-   * @throws ConfigurationException if a parameter is out of range.
-   */
-  public void setSignalGenerator(WaveType waveType, double startFrequency, double amplitude,
-          double offset, SweepType sweepType, int sweeps, double stopFrequency, double increment,
-          double dwellTime)
-          throws IllegalStateException, NotSupportedException, ConfigurationException {
-    setSignalGenerator(new GeneratorSettings(
-            waveType,
-            startFrequency,
-            amplitude,
-            offset,
-            sweepType,
-            sweeps,
-            stopFrequency,
-            increment,
-            dwellTime));
   }
 
   /**
@@ -507,7 +462,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if a parameter is out of range.
    */
   public void setSignalGenerator(GeneratorSettings settings)
-          throws IllegalStateException, NotSupportedException, ConfigurationException {
+          throws NotSupportedException, ConfigurationException {
     checkUnit();
 
     unit.setGenerator(settings);
@@ -520,7 +475,7 @@ public class PicoScope implements AutoCloseable {
    * @throws IllegalStateException if instance is not opened.
    * @throws ConfigurationException if the block could not be run because of wrong configuration.
    */
-  public void runBlock() throws IllegalStateException, ConfigurationException {
+  public void runBlock() throws ConfigurationException {
     checkUnit();
 
     unit.runBlock();
@@ -532,7 +487,7 @@ public class PicoScope implements AutoCloseable {
    * @return the result set.
    * @throws IllegalStateException if instance is not opened.
    */
-  public ResultSet getTimesAndValues() throws IllegalStateException {
+  public ResultSet getTimesAndValues() {
     checkUnit();
 
     return unit.getTimesAndValues();
@@ -549,7 +504,7 @@ public class PicoScope implements AutoCloseable {
    * @throws NotSupportedException if the ETS Mode is not supported by the device.
    */
   public void setModeEts(EtsMode mode, int etsCyles, int etsInterleave)
-          throws IllegalStateException, ConfigurationException, NotSupportedException {
+          throws ConfigurationException, NotSupportedException {
     setModeEts(new EtsSettings(mode, etsCyles, etsInterleave));
   }
 
@@ -561,8 +516,8 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if one parameter is out of range.
    * @throws NotSupportedException if the ETS Mode is not supported by the device.
    */
-  public void setModeEts(EtsSettings settings)
-          throws IllegalStateException, ConfigurationException, NotSupportedException {
+  public void setModeEts(EtsSettings settings) 
+          throws ConfigurationException, NotSupportedException {
     checkUnit();
 
     unit.setEts(settings);
@@ -575,8 +530,7 @@ public class PicoScope implements AutoCloseable {
    * @throws ConfigurationException if one parameter is out of range.
    * @throws NotSupportedException if the ETS Mode is not supported by the device.
    */
-  public void deactivateModeEts()
-          throws IllegalStateException, ConfigurationException, NotSupportedException {
+  public void deactivateModeEts() throws ConfigurationException, NotSupportedException {
     checkUnit();
 
     EtsSettings settings;
@@ -601,8 +555,7 @@ public class PicoScope implements AutoCloseable {
    * @throws NotSupportedException if the device does not support streaming mode.
    * @throws ConfigurationException if no streaming mode could start because of configuration error.
    */
-  public void runStreaming()
-          throws IllegalStateException, NotSupportedException, ConfigurationException {
+  public void runStreaming() throws NotSupportedException, ConfigurationException {
     checkUnit();
 
     unit.runStreaming();
@@ -616,8 +569,7 @@ public class PicoScope implements AutoCloseable {
    *                               in streaming mode.
    * @throws ConfigurationException if a register callback could not be registered on the driver.
    */
-  public void registerStreamingCallback(OnDataCallback callback)
-          throws IllegalStateException, ConfigurationException {
+  public void registerStreamingCallback(OnDataCallback callback) throws ConfigurationException {
     checkUnit();
 
     unit.registerCallback(callback);

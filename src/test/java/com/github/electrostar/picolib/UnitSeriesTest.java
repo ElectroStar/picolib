@@ -20,7 +20,6 @@
 
 package com.github.electrostar.picolib;
 
-import com.github.electrostar.picolib.UnitSeries;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -57,14 +56,14 @@ public class UnitSeriesTest {
    */
   @Test
   public void testValueOf() {
-    assertEquals(UnitSeries.PicoScope2000er, UnitSeries.valueOf("PicoScope2000er"));
-    assertEquals(UnitSeries.PicoScope2000Aer, UnitSeries.valueOf("PicoScope2000Aer"));
-    assertEquals(UnitSeries.PicoScope3000er, UnitSeries.valueOf("PicoScope3000er"));
-    assertEquals(UnitSeries.PicoScope3000Aer, UnitSeries.valueOf("PicoScope3000Aer"));
-    assertEquals(UnitSeries.PicoScope4000er, UnitSeries.valueOf("PicoScope4000er"));
-    assertEquals(UnitSeries.PicoScope4000Aer, UnitSeries.valueOf("PicoScope4000Aer"));
-    assertEquals(UnitSeries.PicoScope5000er, UnitSeries.valueOf("PicoScope5000er"));
-    assertEquals(UnitSeries.PicoScope6000er, UnitSeries.valueOf("PicoScope6000er"));
+    assertEquals(UnitSeries.PICOSCOPE2000, UnitSeries.valueOf("PICOSCOPE2000"));
+    assertEquals(UnitSeries.PICOSCOPE2000A, UnitSeries.valueOf("PICOSCOPE2000A"));
+    assertEquals(UnitSeries.PICOSCOPE3000, UnitSeries.valueOf("PICOSCOPE3000"));
+    assertEquals(UnitSeries.PICOSCOPE3000A, UnitSeries.valueOf("PICOSCOPE3000A"));
+    assertEquals(UnitSeries.PICOSCOPE4000, UnitSeries.valueOf("PICOSCOPE4000"));
+    assertEquals(UnitSeries.PICOSCOPE4000A, UnitSeries.valueOf("PICOSCOPE4000A"));
+    assertEquals(UnitSeries.PICOSCOPE5000, UnitSeries.valueOf("PICOSCOPE5000"));
+    assertEquals(UnitSeries.PICOSCOPE6000, UnitSeries.valueOf("PICOSCOPE6000"));
     assertThrows(IllegalArgumentException.class, () -> {
       UnitSeries.valueOf("NotFound");
     });
@@ -75,14 +74,14 @@ public class UnitSeriesTest {
    */
   @Test
   public void testFindByLabel() {
-    assertEquals(UnitSeries.PicoScope2000er, UnitSeries.findByLabel("2000"));
-    assertEquals(UnitSeries.PicoScope2000Aer, UnitSeries.findByLabel("2000A"));
-    assertEquals(UnitSeries.PicoScope3000er, UnitSeries.findByLabel("3000"));
-    assertEquals(UnitSeries.PicoScope3000Aer, UnitSeries.findByLabel("3000A"));
-    assertEquals(UnitSeries.PicoScope4000er, UnitSeries.findByLabel("4000"));
-    assertEquals(UnitSeries.PicoScope4000Aer, UnitSeries.findByLabel("4000A"));
-    assertEquals(UnitSeries.PicoScope5000er, UnitSeries.findByLabel("5000"));
-    assertEquals(UnitSeries.PicoScope6000er, UnitSeries.findByLabel("6000"));
+    assertEquals(UnitSeries.PICOSCOPE2000, UnitSeries.findByLabel("2000"));
+    assertEquals(UnitSeries.PICOSCOPE2000A, UnitSeries.findByLabel("2000A"));
+    assertEquals(UnitSeries.PICOSCOPE3000, UnitSeries.findByLabel("3000"));
+    assertEquals(UnitSeries.PICOSCOPE3000A, UnitSeries.findByLabel("3000A"));
+    assertEquals(UnitSeries.PICOSCOPE4000, UnitSeries.findByLabel("4000"));
+    assertEquals(UnitSeries.PICOSCOPE4000A, UnitSeries.findByLabel("4000A"));
+    assertEquals(UnitSeries.PICOSCOPE5000, UnitSeries.findByLabel("5000"));
+    assertEquals(UnitSeries.PICOSCOPE6000, UnitSeries.findByLabel("6000"));
     assertEquals(null, UnitSeries.findByLabel(""));
     assertEquals(null, UnitSeries.findByLabel(null));
     assertEquals(null, UnitSeries.findByLabel("NotFound"));
@@ -93,15 +92,15 @@ public class UnitSeriesTest {
    */
   @Test
   public void testGetLabel() {
-    assertEquals(UnitSeries.PicoScope2000er.getLabel(), "2000");
-    assertEquals(UnitSeries.PicoScope2000Aer.getLabel(), "2000A");
-    assertEquals(UnitSeries.PicoScope3000er.getLabel(), "3000");
-    assertEquals(UnitSeries.PicoScope3000Aer.getLabel(), "3000A");
-    assertEquals(UnitSeries.PicoScope4000er.getLabel(), "4000");
-    assertEquals(UnitSeries.PicoScope4000Aer.getLabel(), "4000A");
-    assertEquals(UnitSeries.PicoScope5000er.getLabel(), "5000");
-    assertEquals(UnitSeries.PicoScope6000er.getLabel(), "6000");
-    assertNotEquals(UnitSeries.PicoScope2000er.getLabel(), "XXXX");
+    assertEquals("2000", UnitSeries.PICOSCOPE2000.getLabel());
+    assertEquals("2000A", UnitSeries.PICOSCOPE2000A.getLabel());
+    assertEquals("3000", UnitSeries.PICOSCOPE3000.getLabel());
+    assertEquals("3000A", UnitSeries.PICOSCOPE3000A.getLabel());
+    assertEquals("4000", UnitSeries.PICOSCOPE4000.getLabel());
+    assertEquals("4000A", UnitSeries.PICOSCOPE4000A.getLabel());
+    assertEquals("5000", UnitSeries.PICOSCOPE5000.getLabel());
+    assertEquals("6000", UnitSeries.PICOSCOPE6000.getLabel());
+    assertNotEquals("XXXX", UnitSeries.PICOSCOPE2000.getLabel());
   }
   
   /**
@@ -109,10 +108,10 @@ public class UnitSeriesTest {
    */
   @Test
   public void testGetDescription() {
-    assertEquals(UnitSeries.PicoScope2000er.getDescription(), 
-            "PicoScope 2000er series PC Oscilloscope");
-    assertNotEquals(UnitSeries.PicoScope2000Aer.getDescription(), 
-            "PicoScope 2000er series PC Oscilloscope");
+    assertEquals("PicoScope 2000 series PC Oscilloscope",
+            UnitSeries.PICOSCOPE2000.getDescription());
+    assertNotEquals("PicoScope 2000 series PC Oscilloscope",
+            UnitSeries.PICOSCOPE2000A.getDescription());
   }
   
   /**
@@ -125,9 +124,9 @@ public class UnitSeriesTest {
     variants.add((short)0x1200);
     
     
-    assertEquals(UnitSeries.PicoScope2000er.getProductIds(), 
+    assertEquals(UnitSeries.PICOSCOPE2000.getProductIds(), 
             variants);
-    assertNotEquals(UnitSeries.PicoScope2000Aer.getProductIds(), 
+    assertNotEquals(UnitSeries.PICOSCOPE2000A.getProductIds(), 
             variants);
   }
   
@@ -136,9 +135,9 @@ public class UnitSeriesTest {
    */
   @Test
   public void testToString() {
-    assertEquals(UnitSeries.PicoScope2000er.toString(), 
-            "PicoScope 2000er series PC Oscilloscope");
-    assertNotEquals(UnitSeries.PicoScope2000Aer.toString(), 
-            "PicoScope 2000er series PC Oscilloscope");
+    assertEquals("PicoScope 2000 series PC Oscilloscope", 
+            UnitSeries.PICOSCOPE2000.toString());
+    assertNotEquals("PicoScope 2000 series PC Oscilloscope",
+            UnitSeries.PICOSCOPE2000A.toString());
   }
 }

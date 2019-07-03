@@ -60,12 +60,10 @@ public class UnitFactory {
    */
   public PicoUnit getUnit(UnitSeries series) throws NotSupportedException {
     PicoUnit unit = null;
-    switch (series) {
-      case PicoScope2000er:
-        unit = helper.makePS2000();
-        break;
-      default:
-        throw new NotSupportedException("Unit Series is not supported by this SDK");
+    if (UnitSeries.PICOSCOPE2000 == series) {
+      unit = helper.makePS2000();
+    } else {
+      throw new NotSupportedException("Unit Series is not supported by this SDK");
     }
 
     return unit;

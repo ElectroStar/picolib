@@ -20,7 +20,6 @@
 
 package com.github.electrostar.picolib;
 
-import com.github.electrostar.picolib.Channel;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -100,18 +99,18 @@ public class ChannelTest {
    */
   @Test
   public void testToStringAndGetLabel() {
-    assertEquals(Channel.CHANNEL_A.toString(), "Channel A");
-    assertEquals(Channel.CHANNEL_A.getLabel(), "Channel A");
-    assertEquals(Channel.CHANNEL_B.toString(), "Channel B");
-    assertEquals(Channel.CHANNEL_B.getLabel(), "Channel B");
-    assertEquals(Channel.CHANNEL_C.toString(), "Channel C");
-    assertEquals(Channel.CHANNEL_C.getLabel(), "Channel C");
-    assertEquals(Channel.CHANNEL_D.toString(), "Channel D");
-    assertEquals(Channel.CHANNEL_D.getLabel(), "Channel D");
-    assertEquals(Channel.EXTERNAL.toString(), "External");
-    assertEquals(Channel.EXTERNAL.getLabel(), "External");
-    assertEquals(Channel.NONE.toString(), "None");
-    assertEquals(Channel.NONE.getLabel(), "None");
+    assertEquals("Channel A", Channel.CHANNEL_A.toString());
+    assertEquals("Channel A", Channel.CHANNEL_A.getLabel());
+    assertEquals("Channel B", Channel.CHANNEL_B.toString());
+    assertEquals("Channel B", Channel.CHANNEL_B.getLabel());
+    assertEquals("Channel C", Channel.CHANNEL_C.toString());
+    assertEquals("Channel C", Channel.CHANNEL_C.getLabel());
+    assertEquals("Channel D", Channel.CHANNEL_D.toString());
+    assertEquals("Channel D", Channel.CHANNEL_D.getLabel());
+    assertEquals("External", Channel.EXTERNAL.toString());
+    assertEquals("External", Channel.EXTERNAL.getLabel());
+    assertEquals("None", Channel.NONE.toString());
+    assertEquals("None", Channel.NONE.getLabel());
   }
   
   /**

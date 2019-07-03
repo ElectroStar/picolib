@@ -2,7 +2,7 @@
 ${licenseFirst}
 </#if>
 ${licensePrefix}picolib, open source library to work with PicoScopes.
-${licensePrefix}Copyright (C) 2018-${date?date?string("yyyy")} ElectroStar <startrooper@startrooper.org>
+${licensePrefix}Copyright (C) 2018-${date?date?string("yyyy")} ElectroStar and contributors
 ${licensePrefix?replace(" +$", "", "r")}
 ${licensePrefix}This file is part of picolib.
 ${licensePrefix?replace(" +$", "", "r")}
