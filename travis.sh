@@ -347,11 +347,7 @@ importGPG() {
 mavenDeploy() {
   echo "Deploying Jars"
   SONATYPE_USERNAME=$(echo ${SONATYPE_USERNAME} | base64 --decode)
-  if [ ${IS_RELEASE} ]; then
-    mvn $MAVEN_CLI_OPTS deploy site -s ci_settings.xml -Pjacoco,deploy -DskipTests=true
-  else
-    mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml -Pdeploy -DskipTests=true
-  fi
+  mvn $MAVEN_CLI_OPTS deploy -s ci_settings.xml -Pdeploy -DskipTests=true
 }
 
 #
@@ -407,7 +403,7 @@ createGitHubRelease() {
   if [ ${IS_RC} ]; then
     GHR_OPTS="${GHR_OPTS} -prerelease"
   fi
-  if [ ${BODY} ]; then
+  if [ ${#BODY} -ge 1 ]; then
     ${GHR_TOOL} ${GHR_OPTS} \
       -b "${BODY}" \
       ${TRAVIS_TAG} release/
@@ -420,32 +416,6 @@ createGitHubRelease() {
   if [ -f ${CHG_TOOL_OUTPUT_FILE} ]; then
     rm ${CHG_TOOL_OUTPUT_FILE}
   fi
-}
-
-#
-# Update GH-Pages
-#
-updateGHPages() {
-  # Setup Git Config for Commit
-  git config --global user.email "travis@travis-ci.com"
-  git config --global user.name "Travis CI"
-
-  # Determine if gh-pages branch already exists
-  if [ $(git rev-parse --verify gh-pages || true;) ]; then
-    git checkout gh-pages
-  else 
-    git checkout --orphan gh-pages
-  fi
-  git rm -rf .
-  if [ -d src ]; then
-    rm -rf src
-  fi
-  cp -r target/site/* .
-  rm -rf target
-  git add .
-  git commit --message "Travis build for ${TRAVIS_TAG}"
-  git remote add origin-pages https://${GH_TOKEN}@github.com/ElectroStar/picolib.git > /dev/null 2>&1
-  git push --quiet --set-upstream origin-pages gh-pages
 }
 
 #
@@ -470,12 +440,7 @@ deploy() {
           # Create Changelog
           createChangelog
           # Create Github Release
-          createGitHubRelease    
-
-          # Update of the GH-Pages only for Releases
-          if [ ${IS_RELEASE} ]; then
-            updateGHPages       
-          fi
+          createGitHubRelease
         fi
       fi
     fi
